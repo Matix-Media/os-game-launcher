@@ -1,0 +1,54 @@
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\OS Game-Launcher.exe.config
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\OS Game-Launcher.exe
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\OS Game-Launcher.pdb
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\MainWindow.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\App.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher_MarkupCompile.cache
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher_MarkupCompile.lref
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\MainWindow.baml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher.g.resources
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS_Game_Launcher.Properties.Resources.resources
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher.csproj.GenerateResource.cache
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher.csproj.CoreCompileInputs.cache
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher.exe
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher.pdb
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\App.baml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\library.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\library.baml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Windows\login.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Windows\login.baml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\login.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\register.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\login.baml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\register.baml
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\RestSharp.dll
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\RestSharp.xml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher.csproj.CopyComplete
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Windows\msgBox.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Windows\msgBox.baml
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\Newtonsoft.Json.dll
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\Newtonsoft.Json.xml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\loading.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\loading.baml
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\XamlAnimatedGif.dll
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Windows\loading.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Windows\loading.baml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\discover.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\discover.baml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\game_details.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\game_details.baml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher.csprojAssemblyReference.cache
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\ControlzEx.dll
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\MahApps.Metro.dll
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\ControlzEx.pdb
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\MahApps.Metro.pdb
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\MahApps.Metro.xml
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\DotNetZip.dll
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\DotNetZip.pdb
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\DotNetZip.xml
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\OS Game-Launcher.exe.manifest
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\OS Game-Launcher.application
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher.TrustInfo.xml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher.exe.manifest
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher.application

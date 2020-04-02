@@ -1,0 +1,28 @@
+﻿<Page x:Class="OS_Game_Launcher.Pages.loading"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OS_Game_Launcher.Pages"
+      xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
+      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+      mc:Ignorable="d"
+      Title="loading" Height="200" Width="310" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+    <Grid Background="#3b3b3b">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="7*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Foreground="White" FontSize="40" VerticalAlignment="Bottom" TextAlignment="Center">
+            OS Game-Launcher
+        </TextBlock>
+
+        <controls:ProgressRing Grid.Row="1" Foreground="{StaticResource HighlightOrangeBrush}" />
+
+    </Grid>
+</Page>

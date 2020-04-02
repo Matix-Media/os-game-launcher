@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="OS_Game_Launcher.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="host" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://osg-api.matix-media.net/v1</Value>
+    </Setting>
+    <Setting Name="regestryPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Software\Matix Media\OS Game-Launcher</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
