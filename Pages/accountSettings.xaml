@@ -1,0 +1,139 @@
+﻿<Page x:Class="OS_Game_Launcher.Pages.accountSettings"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OS_Game_Launcher.Pages"
+      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:beha="clr-namespace:OS_Game_Launcher.Behaviors"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="accountSettings"
+      Loaded="Page_Loaded">
+    <Page.Content>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+             <Grid ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" /> 
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Grid.Column="0" Background="{StaticResource MenuColorBrush}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Style="{StaticResource header}" Margin="30,0,0,0">
+                            Your Account
+                    </TextBlock>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="300" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.2*" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border Height="60" Background="{StaticResource MenuColorBrush}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,10,0,10">
+                        <TextBlock Foreground="White" FontSize="20" TextAlignment="Center" VerticalAlignment="Center">
+                            Account Settings
+                        </TextBlock>
+                    </Border>
+                
+                    <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Foreground="White" FontSize="15" TextAlignment="Right">
+                        Username
+                    </TextBlock>
+                    <TextBox Margin="10,5,0,5" x:Name="username" Style="{StaticResource simpleText}" Grid.Column="2" Grid.Row="2" />
+
+                    <TextBlock VerticalAlignment="Center" Grid.Column="1" Grid.Row="3" Foreground="White" FontSize="15" TextAlignment="Right">
+                        Email
+                    </TextBlock>
+                    <TextBox Margin="10,5,0,5" Grid.Row="3" x:Name="email" Style="{StaticResource simpleText}" Grid.Column="2" />
+
+                    <TextBlock VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Foreground="White" FontSize="15" TextAlignment="Right">
+                        Display Name
+                    </TextBlock>
+                    <TextBox Margin="10,5,0,5" Grid.Row="4" x:Name="tag" Style="{StaticResource simpleText}" Grid.Column="2" />
+
+                    <TextBlock VerticalAlignment="Center" Grid.Column="1" Grid.Row="5" Foreground="White" FontSize="15" TextAlignment="Right">
+                        Profile Picture
+                    </TextBlock>
+                    <Button Click="Button_Click" Margin="10,5,0,0" Height="30" Grid.Row="5" Grid.Column="2" x:Name="profilePicture" Style="{StaticResource tabButton}" FontSize="15">
+                        Select from file...
+                    </Button>
+
+                    <Border Margin="0,10,0,0" Background="{StaticResource MenuColorBrush}" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="6">
+                    
+                    </Border>
+                
+                    <Button Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="6" Margin="10,20,10,10" Width="200" Height="40" FontSize="16" Style="{StaticResource tabButtonHighlight}" Click="Button_Click_1" >
+                        Save
+                    </Button>
+
+                
+                
+                
+                    <Border Height="60" Background="{StaticResource MenuColorBrush}" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,20,0,10">
+                        <TextBlock Foreground="White" FontSize="20" TextAlignment="Center" VerticalAlignment="Center">
+                            Change Password
+                        </TextBlock>
+                    </Border>
+
+                    <TextBlock Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" Foreground="White" FontSize="15" TextAlignment="Right">
+                        Current Password
+                    </TextBlock>
+                    <PasswordBox Margin="10,5,0,5" x:Name="old_password" Style="{StaticResource simplePassword}" Grid.Column="2" Grid.Row="8" />
+
+                    <TextBlock VerticalAlignment="Center" Grid.Column="1" Grid.Row="9" Foreground="White" FontSize="15" TextAlignment="Right">
+                        New Password
+                    </TextBlock>
+                    <PasswordBox Margin="10,5,0,5" Grid.Row="9" x:Name="new_password" Style="{StaticResource simplePassword}" Grid.Column="2" />
+
+                    <TextBlock VerticalAlignment="Center" Grid.Row="10" Grid.Column="1" Foreground="White" FontSize="15" TextAlignment="Right">
+                        Confirm Password
+                    </TextBlock>
+                    <PasswordBox Margin="10,5,0,5" Grid.Row="10" x:Name="confirm_password" Style="{StaticResource simplePassword}" Grid.Column="2" />
+
+                    <Border Margin="0,10,0,10" Background="{StaticResource MenuColorBrush}" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="11">
+
+                    </Border>
+
+                    <Button Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="11" Margin="10,20,10,20" Width="200" Height="40" FontSize="16" Style="{StaticResource tabButtonHighlight}" Click="Button_Click_2" >
+                        Save
+                    </Button>
+
+
+
+                </Grid>
+
+                <Frame beha:DisableFrameNavigation.Disable="True" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="100" Grid.RowSpan="100" x:Name="_overlayFrame" NavigationUIVisibility="Hidden" Background="#3b3b3b" Visibility="Hidden" />
+        </Grid>
+        </ScrollViewer>
+       
+    </Page.Content>
+</Page>
