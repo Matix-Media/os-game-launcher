@@ -10,11 +10,11 @@ none
 false
 TRACE
 C:\Users\user\source\repos\OS Game-Launcher\App.xaml
-10-179718001
+11811106454
 
-17-1923734051
-27-2132702403
-MainWindow.xaml;Pages\discover.xaml;Pages\game_details.xaml;Pages\library.xaml;Pages\loading.xaml;Pages\login.xaml;Pages\register.xaml;Windows\loading.xaml;Windows\login.xaml;Windows\msgBox.xaml;
+23379877188
+31-1807795172
+MainWindow.xaml;Pages\accountSettings.xaml;Pages\discover.xaml;Pages\game_details.xaml;Pages\library.xaml;Pages\loading.xaml;Pages\login.xaml;Pages\register.xaml;Windows\loading.xaml;Windows\login.xaml;Windows\msgBox.xaml;
 
 True
 

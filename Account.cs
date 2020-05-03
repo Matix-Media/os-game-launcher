@@ -13,6 +13,7 @@ using System.Net;
 using Ionic.Zip;
 using System.Windows.Navigation;
 using System.Diagnostics;
+using CommandLine;
 
 namespace OS_Game_Launcher
 {
@@ -21,7 +22,10 @@ namespace OS_Game_Launcher
 
         public static bool InstallationRunning = false;
         public static bool extracting = false;
+        public static int InstallingGameID = -1;
+        public static string InstallingGamePath = "";
         public static MainWindow mainWindow;
+        public static WebClient webClient = new WebClient();
 
         public async static Task Logout()
         {
@@ -64,6 +68,50 @@ namespace OS_Game_Launcher
                 return false;
             }
         }
+
+        public async static Task<JObject> GetAccountDetails()
+        {
+            var request = new RestRequest("/user/info/details");
+            var cTokeS = new CancellationTokenSource();
+            var response = await Utils.Client.ExecuteGetAsync(request, cTokeS.Token);
+            var data = JObject.Parse(response.Content);
+
+            return data;
+        }
+
+        public async static Task<JObject> UpdateAccountDetails(string username = null, string email = null, string tag = null, string image = null)
+        {
+            var request = new RestRequest("/user/info/details/update");
+            var cTokeS = new CancellationTokenSource();
+            if (username != null) request.AddParameter("username", username);
+            if (email != null) request.AddParameter("email", email);
+            if (tag != null) request.AddParameter("display_name", tag);
+            if (image != null)
+            {
+                
+                request.AddParameter("profile_picture", "true");
+                request.AddFile("image", image);
+                //request.AddHeader("Content-Type", "form-data");
+            }
+
+            var response = await Utils.Client.ExecutePostAsync(request, cTokeS.Token);
+            var data = JObject.Parse(response.Content);
+            return data;
+        }
+
+        public async static Task<JObject> ChangePassword(string old_password, string new_password)
+        {
+            var request = new RestRequest("/user/password/change");
+            var cTokeS = new CancellationTokenSource();
+            request.AddParameter("old_password", old_password);
+            request.AddParameter("new_password", new_password);
+
+            var response = await Utils.Client.ExecutePostAsync(request, cTokeS.Token);
+            var data = JObject.Parse(response.Content);
+           
+            return data;
+        }
+        
 
         public async static Task<Object> CheckGame(int gameID)
         {
@@ -172,12 +220,19 @@ namespace OS_Game_Launcher
         {
             if (InstallationRunning == false)
             {
+                InstallingGameID = gameID;
+                InstallingGamePath = installationPath;
                 InstallationRunning = true;
                 Account.mainWindow = mainWindow;
+                mainWindow.gameDownloadType.Text = "";
+                mainWindow.gameDownloadStatus.Text = "";
+                mainWindow.gameDownloadProgress.Value = 0;
+                mainWindow.gameDownloadProgress.IsIndeterminate = true;
                 mainWindow.gameDownloadProgress.Visibility = System.Windows.Visibility.Visible;
                 mainWindow.gameDownloadStatus.Visibility = System.Windows.Visibility.Visible;
                 mainWindow.gameDownloadName.Visibility = System.Windows.Visibility.Visible;
                 mainWindow.gameDownloadType.Visibility = System.Windows.Visibility.Visible;
+                
 
                 DriveInfo installDrive = Utils.GetDriverFromPrefix(Path.GetPathRoot(new FileInfo(installationPath).FullName));
                 var freeDiscSpace = installDrive.AvailableFreeSpace;
@@ -212,17 +267,31 @@ namespace OS_Game_Launcher
                             Console.WriteLine("Creating Game folder");
                             Utils.CreateDirectoryIfNotExists(installationPath);
 
-                            WebClient webClient = new WebClient();
+                            
                             webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgressCallback);
 
                             string zipFilePath = Path.Combine(installationPath, Utils.Truncate(Guid.NewGuid().ToString(), 16) + ".zip");
 
                             Console.WriteLine("Download starting (Installing to: " + installationPath + ")");
                             mainWindow.gameDownloadType.Text = "Downloading...";
-                            await webClient.DownloadFileTaskAsync((string)data["game"]["download_comp"], zipFilePath);
-                            webClient.Dispose();
-                            Console.WriteLine("Download done. Checking MD5");
+                            mainWindow.gameDownloadProgress.IsIndeterminate = false;
+                            mainWindow.gameDownloadCancelButton.Visibility = System.Windows.Visibility.Visible;
+                            mainWindow.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Normal;
+                            try
+                            {
+                                await webClient.DownloadFileTaskAsync((string)data["game"]["download_comp"], zipFilePath);
+                            } catch (WebException e) {
+                                Console.WriteLine("Error downloading: " + e.Message + " (" + e.Status + ")");
 
+                                return false;
+                            }
+                            
+                            mainWindow.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Indeterminate;
+                            mainWindow.gameDownloadCancelButton.Visibility = System.Windows.Visibility.Hidden;
+                            Console.WriteLine("Download done. Checking MD5");
+                            webClient.Dispose();
+                            mainWindow.gameDownloadType.Text = "Installing...";
+                            mainWindow.gameDownloadProgress.IsIndeterminate = true;
                             string downloaded_comp_hash = Utils.CalculateMD5(zipFilePath);
                             Console.WriteLine("Comparing mdd5 Hashes: " + downloaded_comp_hash + " = " + (string)data["game"]["comp_md5"]);
                             if (downloaded_comp_hash == ((string)data["game"]["comp_md5"]).ToLowerInvariant())
@@ -231,12 +300,12 @@ namespace OS_Game_Launcher
                                 ZipFile zip = ZipFile.Read(zipFilePath);
                                 long ZipUncompressedSize = 0;
                                 foreach (ZipEntry e in zip) { ZipUncompressedSize += e.UncompressedSize; }
-                                Console.WriteLine(ZipUncompressedSize);
+                                Console.WriteLine("Required space: " + ZipUncompressedSize + " bytes");
                                 
                                 if (freeDiscSpace > ZipUncompressedSize)
                                 {
                                     zip.ExtractProgress += new EventHandler<ExtractProgressEventArgs>(zipExtractProgressCallback);
-                                    mainWindow.gameDownloadType.Text = "Installing...";
+                                    
                                     extracting = true;
                                     await Task.Run(() => zip.ExtractAll(installationPath, ExtractExistingFileAction.OverwriteSilently));
                                     Console.WriteLine("Disposing zipper");
@@ -264,20 +333,23 @@ namespace OS_Game_Launcher
                                 RegistryKey parentKey = Utils.RegistryOpenCreateKey(Registry.CurrentUser, Properties.Settings.Default.regestryPath + "\\Games");
                                 parentKey.DeleteSubKeyTree(gameID.ToString());
                                 Console.WriteLine("Done resetting registry. Deleting download");
-                                await Utils.DeleteAsync(new FileInfo(installationPath));
+                                await Utils.DeleteFolderAsync(new FileInfo(installationPath));
                                 Console.WriteLine("Done deleting");
                             }
 
 
-                            
+                            mainWindow.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
                             mainWindow.gameDownloadProgress.Value = 0;
                             mainWindow.gameDownloadStatus.Text = null;
                             mainWindow.gameDownloadName.Text = null;
                             mainWindow.gameDownloadType.Text = null;
+                            mainWindow.gameDownloadProgress.IsIndeterminate = false;
                             mainWindow.gameDownloadProgress.Visibility = System.Windows.Visibility.Hidden;
                             mainWindow.gameDownloadStatus.Visibility = System.Windows.Visibility.Hidden;
                             mainWindow.gameDownloadName.Visibility = System.Windows.Visibility.Hidden;
                             mainWindow.gameDownloadType.Visibility = System.Windows.Visibility.Hidden;
+                            mainWindow.gameDownloadCancelButton.Visibility = System.Windows.Visibility.Hidden;
+                            InstallationRunning = false;
                             return true;
                         } else
                         {
@@ -295,18 +367,24 @@ namespace OS_Game_Launcher
             } else
             {
                 Utils.showMessage("Another game is getting already installed.");
+                mainWindow.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
                 mainWindow.gameDownloadProgress.Visibility = System.Windows.Visibility.Hidden;
                 mainWindow.gameDownloadStatus.Visibility = System.Windows.Visibility.Hidden;
                 mainWindow.gameDownloadName.Visibility = System.Windows.Visibility.Hidden;
                 mainWindow.gameDownloadType.Visibility = System.Windows.Visibility.Hidden;
+                mainWindow.gameDownloadCancelButton.Visibility = System.Windows.Visibility.Hidden;
+                InstallationRunning = false;
                 return true;
             }
             fail:
             InstallationRunning = false;
+            mainWindow.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
             mainWindow.gameDownloadProgress.Visibility = System.Windows.Visibility.Hidden;
             mainWindow.gameDownloadStatus.Visibility = System.Windows.Visibility.Hidden;
             mainWindow.gameDownloadName.Visibility = System.Windows.Visibility.Hidden;
             mainWindow.gameDownloadType.Visibility = System.Windows.Visibility.Hidden;
+            mainWindow.gameDownloadCancelButton.Visibility = System.Windows.Visibility.Hidden;
+            InstallationRunning = false;
             return false;
         }
 
@@ -314,6 +392,8 @@ namespace OS_Game_Launcher
         {
             mainWindow.gameDownloadProgress.Value = e.ProgressPercentage;
             mainWindow.gameDownloadStatus.Text = Utils.SizeSuffix(e.BytesReceived) + " / " + Utils.SizeSuffix(e.TotalBytesToReceive);
+            mainWindow.TaskbarItemInfo.ProgressValue = (float)((float)e.ProgressPercentage / (float)100);
+            //mainWindow.TaskbarItemInfo.ProgressValue = 0.3;
         }
 
         private static void zipExtractProgressCallback(object sender, ExtractProgressEventArgs e)
@@ -328,8 +408,35 @@ namespace OS_Game_Launcher
                     extracting = false;
                 }
             }
-            
+        }
 
+        public async static Task CancelDownload()
+        {
+            if (InstallationRunning)
+            {
+                mainWindow.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Indeterminate;
+                mainWindow.gameDownloadCancelButton.Visibility = System.Windows.Visibility.Hidden;
+                mainWindow.gameDownloadProgress.IsIndeterminate = true;
+                mainWindow.gameDownloadStatus.Text = String.Empty;
+                mainWindow.gameDownloadStatus.Visibility = System.Windows.Visibility.Hidden;
+                mainWindow.gameDownloadType.Text = "Canceling...";
+                webClient.CancelAsync();
+                webClient.Dispose();
+                await Utils.PutTaskDelay(3000);
+                Console.WriteLine("Download Canceled. Deleting registry keys");
+                RegistryKey parentKey = Utils.RegistryOpenCreateKey(Registry.CurrentUser, Properties.Settings.Default.regestryPath + "\\Games");
+                parentKey.DeleteSubKeyTree(InstallingGameID.ToString());
+                Console.WriteLine("Done resetting registry. Deleting download");
+                await Utils.DeleteFolderAsync(new FileInfo(InstallingGamePath));
+                Console.WriteLine("Done deleting. Cancellation complete");
+                mainWindow.gameDownloadProgress.IsIndeterminate = false;
+                mainWindow.gameDownloadType.Text = "";
+                mainWindow.TaskbarItemInfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
+                mainWindow.gameDownloadProgress.Visibility = System.Windows.Visibility.Hidden;
+                mainWindow.gameDownloadType.Visibility = System.Windows.Visibility.Hidden;
+                mainWindow.gameDownloadName.Visibility = System.Windows.Visibility.Hidden;
+                InstallationRunning = false;
+            }
         }
 
         private static Dictionary<int, Process> runningGames = new Dictionary<int, Process>();
@@ -383,7 +490,16 @@ namespace OS_Game_Launcher
                                     Utils.showMessage("Error starting game.\n" + ex.Message);
                                     return false;
                                 }
-                                runningGames.Add(gameID, gameProcess);
+                                if (runningGames.ContainsKey(gameID))
+                                {
+                                    runningGames[gameID] = gameProcess;
+                                    Console.WriteLine("Seems like game " + gameID + " is already running. Updating process");
+                                    Log.Warning("Game " + gameID + " was already running. Updated process");
+                                } else
+                                {
+                                    runningGames.Add(gameID, gameProcess);
+                                }
+                                
                                 return gameProcess;
                             } else
                             {
@@ -434,11 +550,13 @@ namespace OS_Game_Launcher
             */
         }
 
-        public async static Task<bool> UninstallGame(int gameID)
+        public async static Task<bool> UninstallGame(int gameID, bool hard = false)
         {
             var installPath = CheckGameInstalled(gameID);
-            if (!CheckGameRunningByID(gameID) && !CheckGameInstalling(gameID) && installPath is string)
+            Console.WriteLine("Hard mode enabled on uninstalling");
+            if (hard || (!CheckGameRunningByID(gameID) && !CheckGameInstalling(gameID) && installPath is string))
             {
+                
                 var regGames = Registry.CurrentUser.OpenSubKey(Properties.Settings.Default.regestryPath + "\\Games", true);
                 Console.WriteLine("Uninstalling game " + gameID + " from " + installPath);
 
@@ -500,5 +618,26 @@ namespace OS_Game_Launcher
 
         }
 
+        public async static Task HandleStartupArgs(List<string> args)
+        {
+            var parsedArgs = Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed<CommandLineOptions>(o =>
+            {
+                if (o.gameStartup > -1)
+                {
+                    Console.WriteLine("Stated up with command to launch game " + o.gameStartup);
+                }
+                else
+                {
+                    Console.WriteLine("No game to startup");
+                }
+            });
+        }
+
+    }
+
+    public class CommandLineOptions
+    {
+        [Option("game-startup", Required=false, Default=-1)]
+        public int gameStartup { get; set; }
     }
 }

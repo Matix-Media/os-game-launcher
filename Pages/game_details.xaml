@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:OS_Game_Launcher.Pages"
+      xmlns:beha="clr-namespace:OS_Game_Launcher.Behaviors"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="game_details"
@@ -36,14 +37,14 @@
                 <BlurEffect Radius="100" RenderingBias="Quality"/>
             </Rectangle.Effect>
         </Rectangle>
-        <Rectangle Grid.Row="1" Fill="#CC4D4335" />
+        <Rectangle Grid.Row="1" Fill="#8C4D4335" />
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="60" />
+                <RowDefinition Height="63" />
                 <RowDefinition Height="45" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
@@ -133,8 +134,8 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Button x:Name="btnBuy" FontSize="20" Grid.RowSpan="2" Foreground="White" Style="{StaticResource tabButtonHighlight}" Margin="0,0,20,0" Click="btnBuy_Click">
-                    Buy
+                    <Button x:Name="btnBuy" FontSize="20" Grid.RowSpan="2" Foreground="White" Style="{StaticResource tabButtonHighlight}" Margin="0,0,20,0" Click="btnBuy_Click">
+                        Buy
                 </Button>
 
                 <TextBlock Grid.Column="1" Foreground="{StaticResource SecondaryBrush}" FontWeight="Bold" FontSize="16">
@@ -253,27 +254,34 @@
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="{StaticResource SecondaryFirstBrush}" FontSize="14">
+                            <TextBlock TextAlignment="Right" Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="{StaticResource SecondaryFirstBrush}" FontSize="14">
                                 Download Size
                             </TextBlock>
-                            <TextBlock x:Name="gameDownloadSize" Margin="5,0,15,0" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="White" FontSize="14">
+                            <TextBlock x:Name="gameDownloadSize" TextAlignment="Right" Margin="5,0,15,0" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="White" FontSize="14">
                                 [Size]
                             </TextBlock>
 
-                            <TextBlock Grid.Row="0" Grid.Column="2" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="{StaticResource SecondaryFirstBrush}" FontSize="14">
+                                <TextBlock TextAlignment="Right" Grid.Row="1" Margin="0,5,0,0" Grid.Column="2" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="{StaticResource SecondaryFirstBrush}" FontSize="14">
                                 Tags
                             </TextBlock>
-                            <TextBlock x:Name="gameTags" Grid.Row="0" Margin="5,0,0,0" Grid.Column="3" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="White" FontSize="14">
+                            <TextBlock x:Name="gameTags" Grid.Row="1" Margin="5,5,15,0" Grid.Column="3" VerticalAlignment="Top" Height="auto" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="14">
                                 [Tags]
                             </TextBlock>
 
-                                <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="{StaticResource SecondaryFirstBrush}" FontSize="14">
+                                <TextBlock TextAlignment="Right" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="{StaticResource SecondaryFirstBrush}" FontSize="14">
+                                Required Space
+                            </TextBlock>
+                            <TextBlock x:Name="gameRequiredSpace" Margin="5,5,15,0" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="White" FontSize="14">
+                                [Size]
+                            </TextBlock>
+
+                            <TextBlock TextAlignment="Right" Grid.Row="0" Grid.Column="2" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="{StaticResource SecondaryFirstBrush}" FontSize="14">
                                 Downloads
-                                </TextBlock>
-                                <TextBlock x:Name="gameDownloadCount" Margin="5,5,15,0" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="White" FontSize="14">
+                            </TextBlock>
+                            <TextBlock x:Name="gameDownloadCount" Margin="5,0,0,0" Grid.Row="0" Grid.Column="3" VerticalAlignment="Top" Height="auto" TextWrapping="Wrap" Foreground="White" FontSize="14">
                                 [Downloads]
-                                </TextBlock>
-                            </Grid>
+                            </TextBlock>
+                        </Grid>
                     </Border>
                 </StackPanel>
             </Grid>
@@ -281,7 +289,7 @@
 
 
 
-        <Frame Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="100" Grid.RowSpan="100" x:Name="_overlayFrame" NavigationUIVisibility="Hidden" Background="#3b3b3b" Visibility="Hidden" />
+        <Frame beha:DisableFrameNavigation.Disable="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="100" Grid.RowSpan="100" x:Name="_overlayFrame" NavigationUIVisibility="Hidden" Background="#3b3b3b" Visibility="Hidden" />
     </Grid>
     </ScrollViewer>
     

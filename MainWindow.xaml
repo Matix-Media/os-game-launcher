@@ -5,10 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:local="clr-namespace:OS_Game_Launcher"
+        xmlns:beha="clr-namespace:OS_Game_Launcher.Behaviors"
         mc:Ignorable="d"
         Title="OS Game-Launcher" Height="715" Width="1080"
         ResizeMode="CanResize"
-        WindowStyle="SingleBorderWindow" Loaded="loaded" WindowStartupLocation="CenterScreen" Icon="Resources/icon_app.ico">
+        Visibility="Hidden"
+        WindowStyle="SingleBorderWindow" 
+        Initialized="Window_Initialized" 
+        WindowStartupLocation="CenterScreen" 
+        Icon="Resources/icon_app.ico"
+        SizeChanged="Window_SizeChanged"
+        Closing="Window_Closing">
     <WindowChrome.WindowChrome>
         <WindowChrome 
         CaptionHeight="0"
@@ -16,6 +23,9 @@
         CornerRadius="0"
         GlassFrameThickness="-1"/>
     </WindowChrome.WindowChrome>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo />
+    </Window.TaskbarItemInfo>
     <Window.Resources>
         <!-- .... other resources .... -->
         
@@ -170,8 +180,8 @@
             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
                 <Button Padding="20, 0" Content="Your Games" FontSize="18" Style="{StaticResource tabButton}" Click="Button_Click" />
                 <Button Padding="20, 0" Content="Discover" FontSize="18" Style="{StaticResource tabButton}" Click="Button_Click_1" />
-                <Button Padding="20, 0" Content="Your Account" FontSize="18" Style="{StaticResource tabButton}" />
-                <Button Padding="20, 0" Content="Settings" FontSize="18" Style="{StaticResource tabButton}" />
+                <Button Padding="20, 0" Content="Your Account" FontSize="18" Style="{StaticResource tabButton}" Click="Button_Click_3" />
+                <Button Padding="20, 0" Content="Settings" FontSize="18" Style="{StaticResource tabButton}" Click="Button_Click_4" />
             </StackPanel>
 
             <Grid Grid.Row="0" Grid.Column="1">
@@ -213,9 +223,11 @@
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
-                        <Border BorderThickness="1" Margin="7"
+                        <Border BorderThickness="1" Margin="7" Height="36" CornerRadius="18"
                         BorderBrush="{StaticResource HighlightOrangeBrush}">
-                            <Image RenderOptions.BitmapScalingMode="HighQuality" Source="Resources/unknown-avatar.png" x:Name="userProfilePicture" />
+                            <Border.Background>
+                                <ImageBrush x:Name="userProfilePicture" RenderOptions.BitmapScalingMode="HighQuality" Stretch="UniformToFill" ImageSource="Resources/unknown-avatar.png" />
+                            </Border.Background>
                         </Border>
 
                         <TextBlock Grid.Row="0" Grid.Column="1" 
@@ -241,8 +253,8 @@
                 </Button>
             </Grid>
         </Grid>
-        
-        <Frame x:Name="_mainFrame" Grid.Row="2" Grid.Column="0" Content="Loading..." NavigationUIVisibility="Hidden" />
+
+        <Frame beha:DisableFrameNavigation.Disable="True" x:Name="_mainFrame" Grid.Row="2" Grid.Column="0" Content="Loading..." NavigationUIVisibility="Hidden" />
         
         <Grid Grid.Row="3" Grid.Column="0" Style="{StaticResource statusBar}">
             <Grid.ColumnDefinitions>
@@ -252,8 +264,8 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="6*" />
-                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
             <controls:MetroProgressBar x:Name="gameDownloadProgress" Visibility="Hidden" VerticalAlignment="Center" Margin="5" Foreground="{StaticResource HighlightOrangeBrush}" />
@@ -263,6 +275,9 @@
             </TextBlock>
             <TextBlock x:Name="gameDownloadName" Visibility="Hidden" Grid.Column="3" FontSize="11" VerticalAlignment="Center" Foreground="White" Margin="0,0,15,0">
             </TextBlock>
+            <Button x:Name="gameDownloadCancelButton" Visibility="Hidden" Click="gameDownloadCancelButton_Click" Style="{StaticResource tabButton}" Grid.Column="4" FontSize="11" VerticalAlignment="Center" Margin="0,0,15,0">
+                Cancel Download
+            </Button>
 
             <TextBlock x:Name="gameStarting" Visibility="Hidden" Grid.Column="4" FontSize="11" VerticalAlignment="Center" Foreground="{StaticResource SecondaryFirstBrush}" Margin="0,0,3,0">
                 Starting game
@@ -270,8 +285,14 @@
             <TextBlock x:Name="gameStartingName" Visibility="Hidden" Grid.Column="5" FontSize="11" VerticalAlignment="Center" Foreground="White">
                 [Game]
             </TextBlock>
+
+            <TextBlock x:Name="launcherVersion" Grid.Column="7" Margin="0,0,10,0" FontSize="11" VerticalAlignment="Center" Foreground="White">
+                0.1.1.14 (alpha)
+            </TextBlock>
+
+           
         </Grid>
 
-        <Frame x:Name="_overflowPanel" Grid.ColumnSpan="100" Grid.RowSpan="100" Visibility="Hidden" Grid.Row="0" Grid.Column="0" NavigationUIVisibility="Hidden" />
+        <Frame beha:DisableFrameNavigation.Disable="True" x:Name="_overflowPanel" Grid.ColumnSpan="100" Grid.RowSpan="100" Visibility="Hidden" Grid.Row="0" Grid.Column="0" NavigationUIVisibility="Hidden" />
     </Grid>
 </Window>

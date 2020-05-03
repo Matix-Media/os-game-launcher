@@ -8,5 +8,8 @@
     <Setting Name="regestryPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">Software\Matix Media\OS Game-Launcher</Value>
     </Setting>
+    <Setting Name="userAgent" Type="System.String" Scope="User">
+      <Value Profile="(Default)">OSGameLauncherClient/0.0.1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

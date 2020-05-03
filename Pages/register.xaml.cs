@@ -46,7 +46,7 @@ namespace OS_Game_Launcher.Pages
             request.AddParameter("display_name", tag);
             request.AddParameter("email", email);
             request.AddParameter("password", password);
-            var response = client.Post(request);
+            var response = await client.ExecutePostAsync(request);
             var data = JObject.Parse(response.Content);
 
             Utils.DisplayLoading(_overlayFrame);
@@ -85,8 +85,9 @@ namespace OS_Game_Launcher.Pages
                 }
             }
 
+            Utils.HideLoading(_overlayFrame);
             new Windows.msgBox(error_fb).ShowDialog();
-
+            
             return false;
         }
 
@@ -98,8 +99,8 @@ namespace OS_Game_Launcher.Pages
                 return;
             }
 
-            var success = RegisterAccount(username.Text, email.Text, tag.Text, password.Password);
-            if (await success)
+            var success = await RegisterAccount(username.Text, email.Text, tag.Text, password.Password);
+            if (success)
             {
                 Console.WriteLine("Account successfully created");
                 new Windows.msgBox("Your Account has been successfully created. You can now login.").ShowDialog();

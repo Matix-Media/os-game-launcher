@@ -32,6 +32,8 @@ namespace OS_Game_Launcher.Pages
         private string gameNameCode;
         private string gamePriceCode;
         private bool FirstLoadDone;
+        private MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
+        private bool bannerLoaded = false;
 
         public game_details(int gameID)
         {
@@ -74,7 +76,8 @@ namespace OS_Game_Launcher.Pages
                     gameDescription.Text = (string)data["game"]["description"];
                     gameTags.Text = (string)data["game"]["tags"];
                     gameDownloadCount.Text = Utils.FormatNumber((int)data["game"]["downloads"]);
-                    gameDownloadSize.Text = Utils.SizeSuffix(await Utils.GetFileSize(new Uri((string)data["game"]["download_comp"])));
+                    gameDownloadSize.Text = Utils.SizeSuffix((int)data["game"]["download_size"]);
+                    gameRequiredSpace.Text = Utils.SizeSuffix((int)data["game"]["install_size"]);
                     if ((string)data["game"]["license"] == null)
                     {
                         gameLicense.Text = "Not know";
@@ -172,16 +175,17 @@ namespace OS_Game_Launcher.Pages
                         btnInstall.Content = "Installing...";
                     }
                         
-
-                    if (data["game"]["banner"] != null)
+                    if (data["game"]["banner"] != null && !bannerLoaded)
                     {
                         if (await Utils.CheckUrl((string)data["game"]["banner"]))
                         {
                             if (await Utils.UrlIsImage((string)data["game"]["banner"]))
                             {
+
                                 var imageBrush = Utils.UniformImageBrush(new BitmapImage(new Uri((string)data["game"]["banner"])), (int)gameBannerRectangel.Width, (int)gameBannerRectangel.Height);
                                 gameBannerRectangel.Fill = imageBrush;
                                 gameBlurBackground.Fill = imageBrush;
+                                bannerLoaded = true;
                             }
                         }
                         
@@ -249,6 +253,8 @@ namespace OS_Game_Launcher.Pages
                         Console.WriteLine("Successfully bought game with ID " + (int)((JObject)result)["game_bought"]);
                         var currentW = (MainWindow)Window.GetWindow(this);
                         currentW.userBalance.Text = ((float)((JObject)result)["new_balance"]).ToString("C");
+                        _ = mainWindow.discoverP.refresh();
+                        _ = mainWindow.libraryP.refresh();
                         await UpdateGameInfo();
                     }
 
@@ -275,9 +281,13 @@ namespace OS_Game_Launcher.Pages
                     {
                         btnInstall.Content = "Installing...";
                         btnInstall.IsEnabled = false;
+
                         var installed = await Account.InstallGame(gameID, System.IO.Path.Combine(Utils.GetDefaultInstallationPath(), gameID.ToString()), (MainWindow)Application.Current.MainWindow);
                         if (installed)
                         {
+                            
+                            _ = mainWindow.discoverP.refresh();
+                            _ = mainWindow.libraryP.refresh();
                             Utils.DisplayLoading(_overlayFrame);
                             await UpdateGameInfo();
                             Utils.HideLoading(_overlayFrame);
@@ -286,7 +296,7 @@ namespace OS_Game_Launcher.Pages
                             btnInstall.Content = "Install";
                             btnInstall.IsEnabled = true;
                         }
-                        
+  
                     }
                 }
             }
@@ -325,7 +335,11 @@ namespace OS_Game_Launcher.Pages
             Utils.DisplayLoading(_overlayFrame);
             var endTime = DateTime.Now;
             var IngameTime = endTime.Subtract(started).TotalMinutes;
-            Console.WriteLine("Ingame Time: " + Convert.ToInt32(IngameTime) + " GameID: " + gameID);
+            Console.WriteLine("In-game Time: " + Convert.ToInt32(IngameTime) + " GameID: " + gameID);
+            if (Convert.ToInt32(IngameTime) < 1)
+            {
+                IngameTime = 1;
+            }
             await Account.AddGameSession(gameID, Convert.ToInt32(IngameTime));
             btnPlay.Content = "Play";
             await UpdateGameInfo();
@@ -391,6 +405,8 @@ namespace OS_Game_Launcher.Pages
             var result = await Account.UninstallGame(gameID);
             if (result)
             {
+                _ = mainWindow.discoverP.refresh();
+                _ = mainWindow.libraryP.refresh();
                 await UpdateGameInfo();
             }
             Utils.HideLoading(_overlayFrame);

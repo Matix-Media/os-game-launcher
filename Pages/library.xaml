@@ -5,9 +5,11 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:local="clr-namespace:OS_Game_Launcher.Pages"
+      xmlns:beha="clr-namespace:OS_Game_Launcher.Behaviors"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Your library">
+      Title="Your library"
+      Loaded="Page_Loaded">
 
     <Page.Content>
         <Grid>
@@ -34,17 +36,69 @@
                     Your Games
                 </TextBlock>
 
-                <xctk:WatermarkTextBox x:Name="searchQuery" Grid.Column="1" Watermark="Search" VerticalAlignment="Center" Margin="10,0,0,0" Padding="2,2,20,2" />
+                <xctk:WatermarkTextBox x:Name="searchQuery" Grid.Column="1" Watermark="Search" VerticalAlignment="Center" Margin="10,0,0,0" Padding="2,2,25,2" Style="{StaticResource simpleWatermark}" />
 
-                <Button Grid.Column="1" HorizontalAlignment="Right" Style="{StaticResource tabButtonPadding0}" IsDefault="True" Margin="2,21" Background="Transparent">
-                    <Image Source="/Resources/search.png" RenderOptions.BitmapScalingMode="HighQuality" />
+                <Button Grid.Column="1" Width="23" HorizontalAlignment="Right" Style="{StaticResource tabButtonPadding0}" IsDefault="True" Click="Button_Click" Margin="0,17,0,19">
+                    <Image Height="15" Source="/Resources/search.png" RenderOptions.BitmapScalingMode="HighQuality" />
                 </Button>
-                <Button Grid.Column="2" Style="{StaticResource tabButtonPadding0}" Margin="1,17,30,17">
+                <Button Grid.Column="2" Style="{StaticResource tabButtonPadding0}" Margin="1,17,30,17" Click="Button_Click_1">
                     <Image Height="20" Source="/OS Game-Launcher;component/Resources/home.png" RenderOptions.BitmapScalingMode="HighQuality" />
                 </Button>
             </Grid>
 
-            <Frame Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="100" Grid.RowSpan="100" x:Name="_overlayFrame" NavigationUIVisibility="Hidden" Background="#3b3b3b" Visibility="Hidden" />
+            <ListBox SelectionChanged="gamesList_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="2" Grid.Column="0" x:Name="gamesList" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Foreground="White" Margin="-1">
+                <ListBox.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock TextAlignment="Center" Padding="10" Background="{StaticResource MenuColorBrush}" Text="{Binding Name}" FontSize="20" FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                </ListBox.GroupStyle>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="5" Width="152" Height="202">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Width="152" Height="202" Grid.Row="0" Background="{StaticResource MenuColorBrush}" BorderBrush="{StaticResource HighlightOrangeBrush}" BorderThickness="1">
+                                <!-- <Image Source="{Binding Cover}" Width="150" Height="200" />-->
+                                <Rectangle Width="150" Height="200">
+                                    <Rectangle.Fill>
+                                        <ImageBrush RenderOptions.BitmapScalingMode="HighQuality" ImageSource="{Binding Cover}" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Border>
+
+                            <Image Visibility="{Binding OwnedVisibility}" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Margin="5" Source="/OS Game-Launcher;component/Resources/success.png" />
+                            <Image Visibility="{Binding InstalledVisibility}" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Margin="5" Source="/OS Game-Launcher;component/Resources/download.png" />
+
+
+                            <TextBlock Width="150" Margin="0,0,0,1" Padding="5" Background="#99000000" Grid.Row="0" FontSize="15" VerticalAlignment="Bottom" TextAlignment="Center" Text="{Binding Title}" Foreground="White" TextWrapping="Wrap" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Border x:Name="noResults" Visibility="Hidden" Grid.Row="2" Margin="10" CornerRadius="5" Padding="10,5" Background="{StaticResource SecondaryBrush}" VerticalAlignment="Top" HorizontalAlignment="Center" Width="auto">
+                <TextBlock FontSize="17" Foreground="White" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp">
+                    You don't own any games. 
+                    Click here to find some amazing games!
+                </TextBlock>
+            </Border>
+
+            <Frame beha:DisableFrameNavigation.Disable="True" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="100" Grid.RowSpan="100" x:Name="_overlayFrame" NavigationUIVisibility="Hidden" Background="#3b3b3b" Visibility="Hidden" />
         </Grid>
     </Page.Content>
 </Page>

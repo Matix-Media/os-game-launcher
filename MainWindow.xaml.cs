@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
+using System.Windows.Threading;
+using Microsoft.Win32;
 
 namespace OS_Game_Launcher
 {
@@ -28,10 +30,12 @@ namespace OS_Game_Launcher
 
         public Pages.library libraryP = new Pages.library();
         public Pages.discover discoverP = new Pages.discover();
+        public Pages.accountSettings accountP = new Pages.accountSettings();
+        public Pages.settings settingsP = new Pages.settings();
 
         public MainWindow()
         {
-            InitializeComponent();
+            Console.WriteLine("\nNew Session");
 
             Utils.Init();
             
@@ -40,7 +44,9 @@ namespace OS_Game_Launcher
                 Utils.showMessage("We can't connect to our servers. Please check your Internet connection or contact our support.");
                 App.Current.Shutdown(1);
             }
-               
+
+            Utils.CheckVersion();
+
             if (!LoggedIn)
             {
                 Window loginW = new Windows.login();
@@ -58,8 +64,40 @@ namespace OS_Game_Launcher
                 }
             }
 
+            InitializeComponent();
+
+            launcherVersion.Text = Utils.getRunningVersion() + " (alpha)";
             _mainFrame.Navigate(new Pages.loading());
         }
+
+        private async void Window_Initialized(object sender, EventArgs e)
+        {
+            this.Visibility = Visibility.Hidden;
+            var loadingWin = new Windows.loading();
+            loadingWin.Show();
+
+            Utils.setURLProtocol();
+
+            await Utils.fixInstallingGames();
+
+            await UpdateUserData();
+
+            Utils.startPipeServer();
+
+            await Account.HandleStartupArgs(App.startupArgs);
+
+            _mainFrame.Navigate(libraryP);
+
+            loadingWin.Close();
+            this.Visibility = Visibility.Visible;
+        }
+        /*
+        private async void loaded(object sender, RoutedEventArgs e)
+        {
+            await UpdateUserData();
+            _mainFrame.Navigate(libraryP);
+        }
+        */
 
         /// <summary>
         /// TitleBar_MouseDown - Drag if single-click, resize if double-click
@@ -104,19 +142,40 @@ namespace OS_Game_Launcher
         /// <summary>
         /// Adjusts the WindowSize to correct parameters when Maximize button is clicked
         /// </summary>
-        private void AdjustWindowSize()
+        private void AdjustWindowSize(bool justState=false)
         {
             if (this.WindowState == WindowState.Maximized)
             {
-                this.WindowState = WindowState.Normal;
-                MaxButton.Content = "⬜";
-                Root.Margin = new Thickness(0);
+                if (justState == false)
+                {
+                    this.WindowState = WindowState.Normal;
+                    
+                    MaxButton.Content = "⬜";
+                    Root.Margin = new Thickness(0);
+                } else
+                {
+                    MaxButton.Content = "◱";
+                    Root.Margin = new Thickness(8);
+                   
+                }
+                
+                
             }
             else
             {
-                this.WindowState = WindowState.Maximized;
-                MaxButton.Content = "◱";
-                Root.Margin = new Thickness(8);
+                if (justState == false)
+                {
+                    this.WindowState = WindowState.Maximized;
+                    MaxButton.Content = "◱";
+                    Root.Margin = new Thickness(8);
+                } else
+                {
+                    
+                    MaxButton.Content = "⬜";
+                    Root.Margin = new Thickness(0);
+                }
+                
+                
             }
 
         }
@@ -131,17 +190,11 @@ namespace OS_Game_Launcher
             _mainFrame.Navigate(discoverP);
         }
 
-        private async void loaded(object sender, RoutedEventArgs e)
-        {
-            await UpdateUserData();
-            _mainFrame.Navigate(libraryP);
-        }
+        
 
         public async Task UpdateUserData()
         {
-            this.Visibility = Visibility.Hidden;
-            var loadingWin = new Windows.loading();
-            loadingWin.Show();
+            
 
             var request = new RestRequest("/user/info/home");
             var cTokeS = new CancellationTokenSource();
@@ -172,7 +225,8 @@ namespace OS_Game_Launcher
                 if (await Utils.UrlIsImage((string)data["profile_picture_url"]))
                 {
                     Console.WriteLine("User profile picture is image");
-                    userProfilePicture.Source = new BitmapImage(new Uri((string)data["profile_picture_url"]));
+                    var btmp = new BitmapImage(new Uri((string)data["profile_picture_url"]));
+                    userProfilePicture.ImageSource = btmp;
                 } else
                 {
                     Console.WriteLine("User profile picture is not an image");
@@ -182,8 +236,7 @@ namespace OS_Game_Launcher
                 Console.WriteLine("User profile picture is not available");
             }
 
-            loadingWin.Close();
-            this.Visibility = Visibility.Visible;
+            
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -202,6 +255,36 @@ namespace OS_Game_Launcher
             this.IsEnabled = false;
             await Account.Logout();
             loadingWindow.Close();
+        }
+
+        private async void gameDownloadCancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Account.CancelDownload();
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                Console.WriteLine("Window got unintended Maximized");
+                AdjustWindowSize(true);
+            }
+            
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Utils.stopPipServer();
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            _mainFrame.Navigate(accountP);
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            _mainFrame.Navigate(settingsP);
         }
     }
 }

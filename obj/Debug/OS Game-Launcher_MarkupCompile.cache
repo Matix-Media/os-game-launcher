@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-c:\Users\user\source\repos\OS Game-Launcher\obj\Debug\
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\
 OS_Game_Launcher
 none
 false
 DEBUG;TRACE
-c:\Users\user\source\repos\OS Game-Launcher\App.xaml
-101338824620
+C:\Users\user\source\repos\OS Game-Launcher\App.xaml
+12-1384358626
 
-17369461816
-27-952586552
-MainWindow.xaml;Pages\discover.xaml;Pages\game_details.xaml;Pages\library.xaml;Pages\loading.xaml;Pages\login.xaml;Pages\register.xaml;Windows\loading.xaml;Windows\login.xaml;Windows\msgBox.xaml;
+241270673417
+341508453719
+MainWindow.xaml;Pages\settings.xaml;Pages\accountSettings.xaml;Pages\discover.xaml;Pages\game_details.xaml;Pages\library.xaml;Pages\loading.xaml;Pages\login.xaml;Pages\register.xaml;Windows\loading.xaml;Windows\login.xaml;Windows\msgBox.xaml;
 
 True
 

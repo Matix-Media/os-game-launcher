@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OS_Game_Launcher.Windows"
+        xmlns:beha="clr-namespace:OS_Game_Launcher.Behaviors"
         mc:Ignorable="d"
         Title="OS Game-Launcher Login" Height="362.421" Width="335"
         ResizeMode="NoResize"
@@ -32,7 +33,7 @@
             OS Game-Launcher
         </TextBlock>
 
-        <Frame x:Name="_mainFrame" Grid.Row="1" Grid.Column="0" Content="Loading.." NavigationUIVisibility="Hidden" />
+        <Frame x:Name="_mainFrame" beha:DisableFrameNavigation.Disable="True" Grid.Row="1" Grid.Column="0" NavigationUIVisibility="Hidden" />
         
         <Button Grid.Row="2" Grid.Column="0" 
                 Style="{StaticResource tabButton}" FontSize="15" 

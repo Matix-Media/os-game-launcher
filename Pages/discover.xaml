@@ -6,6 +6,7 @@
       xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:local="clr-namespace:OS_Game_Launcher.Pages"
+      xmlns:beha="clr-namespace:OS_Game_Launcher.Behaviors"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Discover"
@@ -33,10 +34,10 @@
                     Discover
                 </TextBlock>
 
-                <xctk:WatermarkTextBox x:Name="searchQuery" Grid.Column="1" Watermark="Search" VerticalAlignment="Center" Margin="10,0,0,0" Padding="2,2,20,2" />
+                <xctk:WatermarkTextBox x:Name="searchQuery" Grid.Column="1" Watermark="Search" VerticalAlignment="Center" Margin="10,0,0,0" Padding="2,2,25,2" Style="{StaticResource simpleWatermark}" />
 
-                <Button Grid.Column="1" HorizontalAlignment="Right" Style="{StaticResource tabButtonPadding0}" IsDefault="True" Click="Button_Click" Margin="2,21" Background="Transparent">
-                    <Image Source="/Resources/search.png" RenderOptions.BitmapScalingMode="HighQuality" />
+                <Button Grid.Column="1" Width="23" HorizontalAlignment="Right" Style="{StaticResource tabButtonPadding0}" IsDefault="True" Click="Button_Click" Margin="0,17,0,19">
+                    <Image Height="15" Source="/Resources/search.png" RenderOptions.BitmapScalingMode="HighQuality" />
                 </Button>
                 <Button Grid.Column="2" Style="{StaticResource tabButtonPadding0}" Click="Button_Click_3" Margin="1,17,30,17">
                     <Image Height="20" Source="/OS Game-Launcher;component/Resources/home.png" RenderOptions.BitmapScalingMode="HighQuality" />
@@ -51,7 +52,7 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="5">
+                        <Grid Margin="5" Width="152" Height="202">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
@@ -60,7 +61,7 @@
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
 
-                            <Border Grid.Row="0" Background="{StaticResource MenuColorBrush}" BorderBrush="{StaticResource HighlightOrangeBrush}" BorderThickness="1">
+                            <Border Width="152" Height="202" Grid.Row="0" Background="{StaticResource MenuColorBrush}" BorderBrush="{StaticResource HighlightOrangeBrush}" BorderThickness="1">
                                 <!-- <Image Source="{Binding Cover}" Width="150" Height="200" />-->
                                 <Rectangle Width="150" Height="200">
                                     <Rectangle.Fill>
@@ -73,7 +74,7 @@
                             <Image Visibility="{Binding InstalledVisibility}" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Margin="5" Source="/OS Game-Launcher;component/Resources/download.png" />
 
 
-                            <TextBlock Padding="5" Background="#99000000" Grid.Row="0" FontSize="15" VerticalAlignment="Bottom" TextAlignment="Center" Text="{Binding Title}" Foreground="White" />
+                            <TextBlock Width="150" Margin="0,0,0,1" Padding="5" Background="#99000000" Grid.Row="0" FontSize="15" VerticalAlignment="Bottom" TextAlignment="Center" Text="{Binding Title}" Foreground="White" TextWrapping="Wrap" />
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -104,8 +105,8 @@
                     <Image Source="/OS Game-Launcher;component/Resources/next.png" />
                 </Button>
             </Grid>
-            
-            <Frame Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="100" Grid.RowSpan="100" x:Name="_overlayFrame" NavigationUIVisibility="Hidden" Background="#3b3b3b" Visibility="Hidden" />
+
+            <Frame beha:DisableFrameNavigation.Disable="True" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="100" Grid.RowSpan="100" x:Name="_overlayFrame" NavigationUIVisibility="Hidden" Background="#3b3b3b" Visibility="Hidden" />
         </Grid>
     </Page.Content>
 </Page>

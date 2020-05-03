@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OS_Game_Launcher.Windows"
+        xmlns:beha="clr-namespace:OS_Game_Launcher.Behaviors"
         mc:Ignorable="d"
         Title="OS Game-Launcher Loading..." Height="289" Width="543"
         ResizeMode="NoResize"
@@ -17,6 +18,6 @@
         GlassFrameThickness="-1"/>
     </WindowChrome.WindowChrome>
     <Grid>
-        <Frame Grid.Row="0" Grid.Column="0" x:Name="_overlayFrame" NavigationUIVisibility="Hidden" Background="#3b3b3b" />
+        <Frame beha:DisableFrameNavigation.Disable="True" Grid.Row="0" Grid.Column="0" x:Name="_overlayFrame" NavigationUIVisibility="Hidden" Background="#3b3b3b" />
     </Grid>
 </Window>

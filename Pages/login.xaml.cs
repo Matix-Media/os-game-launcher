@@ -21,10 +21,12 @@ namespace OS_Game_Launcher.Pages
     /// <summary>
     /// Interaktionslogik für register.xaml
     /// </summary>
+    /// 
     public partial class login : Page
     {
         Windows.login _parent;
         RestClient client;
+        private bool PageChanged = false;
 
         public login(Windows.login __parent)
         {
@@ -37,12 +39,17 @@ namespace OS_Game_Launcher.Pages
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            if (await CheckIfLoggedIn())
+            if (!PageChanged)
             {
-                Console.WriteLine("Found active login session");
-                _parent.DialogResult = true;
-                _parent.Close();
+                PageChanged = true;
+                if (await CheckIfLoggedIn())
+                {
+                    Console.WriteLine("Found active login session");
+                    _parent.DialogResult = true;
+                    _parent.Close();
+                }
             }
+            
         }
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)

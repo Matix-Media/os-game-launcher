@@ -68,3 +68,15 @@ C:\Users\user\source\repos\OS Game-Launcher\bin\Release\ro\Xceed.Wpf.AvalonDock.
 C:\Users\user\source\repos\OS Game-Launcher\bin\Release\ru\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\user\source\repos\OS Game-Launcher\bin\Release\sv\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\user\source\repos\OS Game-Launcher\bin\Release\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\user\source\repos\OS Game-Launcher\bin\Release\CommandLine.dll
+C:\Users\user\source\repos\OS Game-Launcher\bin\Release\CommandLine.xml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Release\GeneratedInternalTypeHelper.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Release\Pages\accountSettings.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Release\Pages\accountSettings.baml
+C:\Users\user\source\repos\OS Game-Launcher\bin\Release\Microsoft.WindowsAPICodePack.dll
+C:\Users\user\source\repos\OS Game-Launcher\bin\Release\Microsoft.WindowsAPICodePack.Shell.dll
+C:\Users\user\source\repos\OS Game-Launcher\bin\Release\ToggleSwitch.dll
+C:\Users\user\source\repos\OS Game-Launcher\bin\Release\Microsoft.WindowsAPICodePack.xml
+C:\Users\user\source\repos\OS Game-Launcher\bin\Release\Microsoft.WindowsAPICodePack.Shell.xml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Release\Pages\settings.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Release\Pages\settings.baml

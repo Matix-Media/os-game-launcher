@@ -46,5 +46,17 @@ namespace OS_Game_Launcher.Properties {
                 this["regestryPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("OSGameLauncherClient/0.0.1")]
+        public string userAgent {
+            get {
+                return ((string)(this["userAgent"]));
+            }
+            set {
+                this["userAgent"] = value;
+            }
+        }
     }
 }

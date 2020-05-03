@@ -31,11 +31,16 @@ namespace OS_Game_Launcher.Pages
             InitializeComponent();
         }
 
-        private string lastSearchType = "all";
-        private string lastSearchQuery = "";
-        private int lastPage = 1;
+        public string lastSearchType = "all";
+        public string lastSearchQuery = "";
+        public int lastPage = 1;
 
-        private async Task search(string query="", string type="all", int page=1)
+        public async Task refresh()
+        {
+            await search(lastSearchQuery, lastSearchType, lastPage);
+        }
+
+        public async Task search(string query="", string type="all", int page=1)
         {
             Utils.DisplayLoading(_overlayFrame);
 
@@ -74,13 +79,9 @@ namespace OS_Game_Launcher.Pages
                         foreach (var result in data["results"])
                         {
                             var game = new Game();
-                            if (await Utils.CheckUrl((string)result["cover"]))
-                            {
-                                if (await Utils.UrlIsImage((string)result["cover"]))
-                                {
-                                    game.Cover = new BitmapImage(new Uri((string)result["cover"]));
-                                }
-                            }
+
+                            game.CoverPath = (string)result["cover"];
+                            
 
                             game.Title = (string)result["name"];
                             game.ID = (int)result["ID"];
@@ -97,7 +98,19 @@ namespace OS_Game_Launcher.Pages
 
                         List<int> foundIDs = new List<int>();
                         foreach (var game in results)
+                        {
+                            if (await Utils.CheckUrl(game.CoverPath))
+                            {
+                                if (await Utils.UrlIsImage(game.CoverPath))
+                                {
+                                    game.Cover = new BitmapImage(new Uri(game.CoverPath));
+                                }
+                            }
+                            gamesList.ItemsSource = null;
+                            gamesList.ItemsSource = results;
+
                             foundIDs.Add(game.ID);
+                        }
 
                         var checkedGames = await Account.CheckGames(foundIDs);
                         if (checkedGames is bool)
