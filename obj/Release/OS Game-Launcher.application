@@ -7,14 +7,14 @@
     <framework targetVersion="4.7.2" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="OS Game-Launcher.exe.manifest" size="23966">
+    <dependentAssembly dependencyType="install" codebase="OS Game-Launcher.exe.manifest" size="24626">
       <assemblyIdentity name="OS Game-Launcher.exe" version="0.1.1.13" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>r255hyMkEa/DgGseFTcJRFu6tyZyKI1clEqgi8XUVAw=</dsig:DigestValue>
+        <dsig:DigestValue>m7O99T4o8xqu6y0gQCez3bGrWD9UDYWA+E+QJoCPK1k=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

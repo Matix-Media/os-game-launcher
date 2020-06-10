@@ -4,7 +4,7 @@
   <description asmv2:iconFile="Resources\icon_app.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="OS Game-Launcher" version="0.1.1.16" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="OS Game-Launcher" version="0.1.17.30303" language="neutral" processorArchitecture="msil" />
     <commandLine file="OS Game-Launcher.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -127,14 +127,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="OS Game-Launcher.exe" size="1632216">
-      <assemblyIdentity name="OS Game-Launcher" version="0.1.1.16" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Notifications.Wpf.dll" size="25088">
+      <assemblyIdentity name="Notifications.Wpf" version="0.1.1.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>8c20b4vuCMoxjrW/BVzg3FVj0zxAPptIMCnkVZlW4T0=</dsig:DigestValue>
+        <dsig:DigestValue>Jr9FjqltCeeNmsEgDSFW2eYg4P7BvaLn6sawXGLrJnc=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="OS Game-Launcher.exe" size="2047960">
+      <assemblyIdentity name="OS Game-Launcher" version="0.1.17.30303" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>RjvcB+xhWWk5afYx5XtyNbU0kQpzrCSygcy0eytV6co=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

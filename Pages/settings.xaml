@@ -72,6 +72,12 @@
                         Select from file...
                     </Button>
 
+                    <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Foreground="White" FontSize="15" TextAlignment="Right">
+                        Create Desktop Shortcuts
+                    </TextBlock>
+                    <CheckBox Click="createDesktopLinkCheckbox_Click" Grid.Column="2" Grid.Row="3" Width="20" Height="20" Margin="10,5,0,0" Style="{StaticResource CircleCheckbox}" HorizontalAlignment="Left"  x:Name="createDesktopLinkCheckbox" />
+
+
                     <Border Margin="0,10,0,0" Background="{StaticResource MenuColorBrush}" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="6">
                     
                     </Border>
@@ -88,14 +94,11 @@
                         </TextBlock>
                     </Border>
 
-                    <!--<TextBlock Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" Foreground="White" FontSize="15" TextAlignment="Right">
+                    <TextBlock Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" Foreground="White" FontSize="15" TextAlignment="Right">
                         Desktop Notifications
                     </TextBlock>
-                    <ToggleButton Style="{StaticResource tabToggleButton}" Grid.Column="2" Grid.Row="8" x:Name="sendDesktopNotificCheckbox" />
-                    -->
-                    <TextBlock Grid.Row="8" Grid.ColumnSpan="2" Grid.Column="1" VerticalAlignment="Center" Foreground="White" FontSize="15" TextAlignment="Center">
-                        Coming soon
-                    </TextBlock>
+                    <CheckBox Click="sendDesktopNotificCheckbox_Click" Grid.Column="2" Grid.Row="8" Width="20" Height="20" Margin="10,5,0,0" Style="{StaticResource CircleCheckbox}" HorizontalAlignment="Left"  x:Name="sendDesktopNotificCheckbox" />
+
                     
                     <Border Margin="0,10,0,0" Background="{StaticResource MenuColorBrush}" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="9">
 

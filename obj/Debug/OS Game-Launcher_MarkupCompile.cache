@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\user\source\repos\OS Game-Launcher\App.xaml
-12-1384358626
+14-1856878078
 
-241270673417
-341508453719
-MainWindow.xaml;Pages\settings.xaml;Pages\accountSettings.xaml;Pages\discover.xaml;Pages\game_details.xaml;Pages\library.xaml;Pages\loading.xaml;Pages\login.xaml;Pages\register.xaml;Windows\loading.xaml;Windows\login.xaml;Windows\msgBox.xaml;
+26-418409790
+36-118621143
+MainWindow.xaml;Pages\aboutOSG.xaml;Pages\publisher.xaml;Pages\settings.xaml;Pages\accountSettings.xaml;Pages\discover.xaml;Pages\game_details.xaml;Pages\library.xaml;Pages\loading.xaml;Pages\login.xaml;Pages\register.xaml;Windows\loading.xaml;Windows\login.xaml;Windows\msgBox.xaml;
 
-True
+False
 

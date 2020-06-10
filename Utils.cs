@@ -20,12 +20,16 @@ using System.Reflection;
 using Newtonsoft.Json.Linq;
 using System.Windows.Threading;
 using Newtonsoft.Json;
+using System.Security.RightsManagement;
+using Notifications.Wpf;
+using IWshRuntimeLibrary;
 
 namespace OS_Game_Launcher
 {
     public static class Utils
     {
         public static RestClient Client = new RestClient(Properties.Settings.Default.host);
+        public static NotificationManager notificationManager;
 
         public static async Task PutTaskDelay(int Miliseconds)
         {
@@ -35,14 +39,19 @@ namespace OS_Game_Launcher
         public static void Init()
         {
             Client.UserAgent = "OSGameLauncherClient/0.0.1";
+
             Guid clientUuidGenerated = Guid.NewGuid();
             RegistryKey launcherRootReg = Registry.CurrentUser;
             RegistryKey rootReg = RegistryOpenCreateKey(launcherRootReg, Properties.Settings.Default.regestryPath);
             string clientUuid = (string) RegistryGetSet(rootReg, "clientUuid", clientUuidGenerated.ToString());
+
             Console.WriteLine("Client UUID: " + clientUuid);
             Client.AddDefaultHeader("client-uuid", clientUuid);
             Client.AddDefaultHeader("client-version", getRunningVersion().ToString());
 
+            notificationManager = new NotificationManager();
+
+            Settings.Load();
             
         }
 
@@ -118,12 +127,8 @@ namespace OS_Game_Launcher
                             switch (msgParts[1])
                             {
                                 case "SET_MAIN_WND_FOCUS":
-                                    if (App.Current.MainWindow.WindowState == WindowState.Minimized)
-                                        App.Current.MainWindow.WindowState = WindowState.Normal;
-
-                                    App.Current.MainWindow.Topmost = true;
-                                    App.Current.MainWindow.Activate();
-                                    App.Current.MainWindow.Topmost = false;
+                                    MainWindow mainWindow = (MainWindow)App.Current.MainWindow;
+                                    mainWindow.SetFocus();
                                     break;
                                 default:
                                     Console.WriteLine("Unknown custom action");
@@ -185,6 +190,12 @@ namespace OS_Game_Launcher
             if (currentAppVersion.CompareTo(newestAppVersion_) < 0)
             {
                 Console.WriteLine("Version is outdated!");
+                notificationManager.Show(new NotificationContent
+                {
+                    Title = "OS Game-Launcher Update",
+                    Message = "A new version of the OS Game-Launcher is available!",
+                    Type = NotificationType.Information
+                }, expirationTime: TimeSpan.FromSeconds(15));
                 showMessage("A newer version of OS Game-Launcher is available. Your currently installed version is " +
                     currentAppVersion.ToString() + " and the newest version is " + newestAppVersion + "!\n\nUpdate " +
                     currentAppVersion.ToString() + " => " + newestAppVersion + "\n\nChange log: " + patchNotes + "\n\nNew version is getting Downloaded...");
@@ -260,6 +271,46 @@ namespace OS_Game_Launcher
             frame.Navigate(null);
             frame.Visibility = Visibility.Hidden;
             
+        }
+
+        public static string UrlShortcutToDesktop(string linkName, string linkUrl, string IconFile, int IconIndex)
+        {
+            string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+
+            using (StreamWriter writer = new StreamWriter(Path.Combine(deskDir, linkName + ".url")))
+            {
+                writer.WriteLine("[InternetShortcut]");
+                writer.WriteLine("URL=" + linkUrl);
+                writer.WriteLine("IconFile=" + IconFile);
+                writer.WriteLine("IconIndex=" + IconIndex);
+                writer.WriteLine("HotKey=0");
+                writer.WriteLine("IDList=");
+                writer.Flush();
+            }
+
+            return Path.Combine(deskDir, linkName + ".url");
+        }
+
+        public static string CreateShortcut(string Name, string Target, string Description=null, string Hotkey=null, string WorkingDirectory=null, string IconPath=null, string Arguments=null)
+        {
+            if (!Settings.CreateDesktopShortcuts)
+                return null;
+
+            object shDesktop = (object)"Desktop";
+            WshShell shell = new WshShell();
+            string shortcutAddress = (string)shell.SpecialFolders.Item(ref shDesktop) + @"\" + Name + ".lnk";
+            IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutAddress);
+
+            shortcut.TargetPath = Target;
+            if (WorkingDirectory != null) shortcut.WorkingDirectory = WorkingDirectory;
+            if (Description != null) shortcut.Description = Description;
+            if (Hotkey != null) shortcut.Hotkey = Hotkey;
+            if (IconPath != null) shortcut.IconLocation = IconPath;
+            if (Arguments != null) shortcut.Arguments = Arguments;
+
+            shortcut.Save();
+
+            return shortcutAddress;
         }
 
         public static bool? showMessage(string message, bool showCancelButton = false)
@@ -429,15 +480,15 @@ namespace OS_Game_Launcher
 
         public static void DeleteDirectory(string targetDir)
         {
-            File.SetAttributes(targetDir, FileAttributes.Normal);
+            System.IO.File.SetAttributes(targetDir, FileAttributes.Normal);
 
             string[] files = Directory.GetFiles(targetDir);
             string[] dirs = Directory.GetDirectories(targetDir);
 
             foreach (string file in files)
             {
-                File.SetAttributes(file, FileAttributes.Normal);
-                File.Delete(file);
+                System.IO.File.SetAttributes(file, FileAttributes.Normal);
+                System.IO.File.Delete(file);
             }
 
             foreach (string dir in dirs)
@@ -457,7 +508,7 @@ namespace OS_Game_Launcher
         {
             using (var md5 = MD5.Create())
             {
-                using (var stream = File.OpenRead(filename))
+                using (var stream = System.IO.File.OpenRead(filename))
                 {
                     var hash = md5.ComputeHash(stream);
                     return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
@@ -590,6 +641,31 @@ namespace OS_Game_Launcher
 
                 }
 
+            }
+        }
+
+
+        public static bool ValidateRequest(JObject requestResult, bool hasSuccess = true)
+        {
+            if (requestResult.ContainsKey("success"))
+            {
+                if ((bool)requestResult["success"] == true)
+                {
+                    return true;
+                } else
+                {
+                    return false;
+                }
+            } else
+            {
+                if (hasSuccess)
+                {
+                    return false;
+                } else
+                {
+                    return true;
+                }
+                
             }
         }
     }

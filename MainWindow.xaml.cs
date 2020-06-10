@@ -32,6 +32,7 @@ namespace OS_Game_Launcher
         public Pages.discover discoverP = new Pages.discover();
         public Pages.accountSettings accountP = new Pages.accountSettings();
         public Pages.settings settingsP = new Pages.settings();
+        public Pages.aboutOSG aboutP = new Pages.aboutOSG();
 
         public MainWindow()
         {
@@ -70,6 +71,7 @@ namespace OS_Game_Launcher
             _mainFrame.Navigate(new Pages.loading());
         }
 
+        private bool AllowedSaveWinProps = false;
         private async void Window_Initialized(object sender, EventArgs e)
         {
             this.Visibility = Visibility.Hidden;
@@ -84,11 +86,13 @@ namespace OS_Game_Launcher
 
             Utils.startPipeServer();
 
+            _mainFrame.Navigate(libraryP);
             await Account.HandleStartupArgs(App.startupArgs);
 
-            _mainFrame.Navigate(libraryP);
-
             loadingWin.Close();
+
+            
+
             this.Visibility = Visibility.Visible;
         }
         /*
@@ -275,6 +279,13 @@ namespace OS_Game_Launcher
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Utils.stopPipServer();
+            if (AllowedSaveWinProps)
+            {
+                Console.WriteLine("Saving window Properties");
+                saveWindowProperties();
+
+            }
+                
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
@@ -285,6 +296,68 @@ namespace OS_Game_Launcher
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
             _mainFrame.Navigate(settingsP);
+        }
+
+        private void aboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            _mainFrame.Navigate(aboutP);
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            _mainFrame.Navigate(aboutP);
+        }
+
+        public void saveWindowProperties()
+        {
+            var key = Utils.RegistryOpenCreateKey(Registry.CurrentUser, Properties.Settings.Default.regestryPath);
+            
+            if (this.WindowState == WindowState.Maximized)
+            {
+                key.SetValue("WinTop", RestoreBounds.Top);
+                key.SetValue("WinLeft", RestoreBounds.Left);
+                key.SetValue("WinHeight", RestoreBounds.Height);
+                key.SetValue("WinWidth", RestoreBounds.Width);
+                key.SetValue("WinMax", true);
+            } else
+            {
+                key.SetValue("WinTop", this.Top);
+                key.SetValue("WinLeft", this.Left);
+                key.SetValue("WinHeight", this.Height);
+                key.SetValue("WinWidth", this.Width);
+                key.SetValue("WinMax", false);
+            }
+        }
+
+        public void readWindowProperties()
+        {
+            var key = Utils.RegistryOpenCreateKey(Registry.CurrentUser, Properties.Settings.Default.regestryPath);
+
+            Top = Convert.ToDouble(Utils.RegistryGetSet(key, "WinTop", 20));
+            Console.WriteLine(Utils.RegistryGetSet(key, "WinTop", 20));
+            Left = Convert.ToDouble(Utils.RegistryGetSet(key, "WinLeft", 20));
+            Height = Convert.ToDouble(Utils.RegistryGetSet(key, "WinHeight", 715));
+            Width = Convert.ToDouble(Utils.RegistryGetSet(key, "WinWidth", 1080));
+
+            if (bool.Parse((string)Utils.RegistryGetSet(key, "WinMax", false))) {
+                WindowState = WindowState.Maximized;
+            }
+        }
+
+        private void Window_SourceInitialized(object sender, EventArgs e)
+        {
+            readWindowProperties();
+            AllowedSaveWinProps = true;
+        }
+
+        public void SetFocus()
+        {
+            if (WindowState == WindowState.Minimized)
+                WindowState = WindowState.Normal;
+
+            Topmost = true;
+            Activate();
+            Topmost = false;
         }
     }
 }

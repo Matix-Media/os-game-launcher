@@ -15,7 +15,8 @@
         WindowStartupLocation="CenterScreen" 
         Icon="Resources/icon_app.ico"
         SizeChanged="Window_SizeChanged"
-        Closing="Window_Closing">
+        Closing="Window_Closing"
+        SourceInitialized="Window_SourceInitialized">
     <WindowChrome.WindowChrome>
         <WindowChrome 
         CaptionHeight="0"
@@ -168,7 +169,7 @@
 
         </Grid>
 
-        <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource tabGrid}">
+        <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource tabGrid}" Panel.ZIndex="100">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
@@ -245,7 +246,7 @@
                 </Button>
 
 
-                <Button Grid.Row="0" Grid.Column="1" Style="{StaticResource tabButton}">
+                <Button Grid.Row="0" Grid.Column="1" Style="{StaticResource tabButton}" Click="Button_Click_5">
                     <Image Source="Resources/announcment.png" RenderOptions.BitmapScalingMode="HighQuality" />
                 </Button>
                 <Button Grid.Row="0" Grid.Column="2" Style="{StaticResource tabButton}">
@@ -286,9 +287,12 @@
                 [Game]
             </TextBlock>
 
-            <TextBlock x:Name="launcherVersion" Grid.Column="7" Margin="0,0,10,0" FontSize="11" VerticalAlignment="Center" Foreground="White">
-                0.1.1.14 (alpha)
-            </TextBlock>
+            <Button Name="aboutButton" Click="aboutButton_Click" Grid.Column="7" Margin="0,0,5,0"  Style="{StaticResource ButtonTransperant}" VerticalAlignment="Center">
+                <TextBlock x:Name="launcherVersion" Grid.Column="7" Margin="5,0" FontSize="11" VerticalAlignment="Center" Foreground="White">
+                    0.1.1.14 (alpha)
+                </TextBlock>
+            </Button>
+            
 
            
         </Grid>

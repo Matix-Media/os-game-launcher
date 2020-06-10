@@ -32,41 +32,62 @@ namespace OS_Game_Launcher.Pages
 
         public async Task refresh()
         {
-            await loadSettings();
+            await LoadSettings();
         }
 
-        public string downloadPath = null;
-        public string lastDownloadPath = null;
+        public string DownloadPath = null;
+        public string LastDownloadPath = null;
 
-        public bool sendDesktopNotific = true;
-        public bool lastSendDesktopNotific = true;
+        public bool CreateDesktopLink = true;
+        public bool LastCreateDesktopLink = true;
+        public bool SendDesktopNotific = true;
+        public bool LastSendDesktopNotific = true;
 
-        public async Task loadSettings()
+        public async Task LoadSettings()
         {
             Utils.DisplayLoading(_overlayFrame);
 
-            var rootKey = Utils.RegistryOpenCreateKey(Registry.CurrentUser, Properties.Settings.Default.regestryPath);
-            downloadPath = (string)Utils.RegistryGetSet(rootKey, "DefaultGameInstallationPath", Utils.GetDefaultInstallationPath());
-            lastDownloadPath = downloadPath;
-            downloadPathButton.Content = downloadPath;
+            Settings.Load();
 
-            sendDesktopNotific = Convert.ToBoolean(Utils.RegistryGetSet(rootKey, "SendDesktopNotifications", true));
-            lastSendDesktopNotific = sendDesktopNotific;
+            DownloadPath = Settings.DefaultGameInstallationPath;
+            LastDownloadPath = DownloadPath;
+            downloadPathButton.Content = DownloadPath;
+
+            CreateDesktopLink = Settings.CreateDesktopShortcuts;
+            LastCreateDesktopLink = CreateDesktopLink;
+            createDesktopLinkCheckbox.IsChecked = CreateDesktopLink;
+
+            SendDesktopNotific = Settings.SendDesktopNotifications;
+            LastSendDesktopNotific = SendDesktopNotific;
+            sendDesktopNotificCheckbox.IsChecked = SendDesktopNotific;
 
             Utils.HideLoading(_overlayFrame);
         }
 
         
 
-        public async Task  saveSettings()
+        public async Task  SaveSettings()
         {
             Utils.DisplayLoading(_overlayFrame);
-            var rootKey = Utils.RegistryOpenCreateKey(Registry.CurrentUser, Properties.Settings.Default.regestryPath);
 
-            if (downloadPath != lastDownloadPath) rootKey.SetValue("DefaultGameInstallationPath", downloadPath);
+            if (DownloadPath != LastDownloadPath)
+            {
+                Settings.DefaultGameInstallationPath = DownloadPath;
+                LastDownloadPath = DownloadPath;
+            }
+                
+            if (CreateDesktopLink != LastCreateDesktopLink)
+            {
+                Settings.CreateDesktopShortcuts = CreateDesktopLink;
+                LastCreateDesktopLink = CreateDesktopLink;
+            }
+                
+            if (SendDesktopNotific != LastSendDesktopNotific) {
+                Settings.SendDesktopNotifications = SendDesktopNotific;
+                LastSendDesktopNotific = SendDesktopNotific;
+            }
 
-            if (sendDesktopNotific != lastSendDesktopNotific) rootKey.SetValue("SendDesktopNotifications", sendDesktopNotific);
-
+            Settings.Save();
 
             Utils.HideLoading(_overlayFrame);
         }
@@ -76,7 +97,7 @@ namespace OS_Game_Launcher.Pages
             if (PageChanged == false)
             {
                 PageChanged = true;
-                await loadSettings();
+                await LoadSettings();
 
             }
 
@@ -85,7 +106,7 @@ namespace OS_Game_Launcher.Pages
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.InitialDirectory = downloadPath;
+            dialog.InitialDirectory = DownloadPath;
             dialog.Multiselect = false;
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
@@ -93,7 +114,7 @@ namespace OS_Game_Launcher.Pages
                 var filePath = dialog.FileName;
                 if (Directory.Exists(filePath))
                 {
-                    downloadPath = filePath;
+                    DownloadPath = filePath;
                     downloadPathButton.Content = filePath;
                     Console.WriteLine("Selected path: " + filePath);
                 } else
@@ -105,7 +126,17 @@ namespace OS_Game_Launcher.Pages
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            await saveSettings();
+            await SaveSettings();
+        }
+
+        private void createDesktopLinkCheckbox_Click(object sender, RoutedEventArgs e)
+        {
+            CreateDesktopLink = (bool)createDesktopLinkCheckbox.IsChecked;
+        }
+
+        private void sendDesktopNotificCheckbox_Click(object sender, RoutedEventArgs e)
+        {
+            SendDesktopNotific = (bool)sendDesktopNotificCheckbox.IsChecked;
         }
     }
 }

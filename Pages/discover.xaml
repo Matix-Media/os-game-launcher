@@ -44,7 +44,10 @@
                 </Button>
             </Grid>
 
-            <ListBox SelectionChanged="gamesList_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="2" Grid.Column="0" x:Name="gamesList" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
+            <ListBox SelectionChanged="gamesList_SelectionChanged" 
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="2" 
+                     Grid.Column="0" x:Name="gamesList" Background="{x:Null}" BorderBrush="{x:Null}" 
+                     Foreground="White" ScrollViewer.CanContentScroll="False">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
@@ -52,7 +55,7 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="5" Width="152" Height="202">
+                        <Grid Margin="5" Width="152" Height="202" Style="{StaticResource gameCoverCard}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />

@@ -14,6 +14,11 @@ using Ionic.Zip;
 using System.Windows.Navigation;
 using System.Diagnostics;
 using CommandLine;
+using OS_Game_Launcher.Pages;
+using System.Windows.Forms;
+using System.Security.Cryptography;
+using System.Drawing;
+using System.Reflection;
 
 namespace OS_Game_Launcher
 {
@@ -319,6 +324,29 @@ namespace OS_Game_Launcher
 
                                     await AddGameDownload(gameID);
 
+                                    if (Settings.CreateDesktopShortcuts)
+                                        try
+                                        {
+                                            string IconPath = Path.Combine(Settings.DefaultGameInstallationPath, gameID.ToString(), (string)data["game"]["exec_path"]);
+
+                                            Console.WriteLine("Icon located at: " + IconPath);
+
+                                            Console.WriteLine("Shortcut directing to: " + System.Reflection.Assembly.GetEntryAssembly().Location);
+
+                                            string ShortcutPath = Utils.UrlShortcutToDesktop((string)data["game"]["name"], "osgamelauncher://start-game/" + gameID, IconPath, (int)data["game"]["exe_icon_id"]);
+
+                                            //string ShortcutPath = Utils.CreateShortcut((string)data["game"]["name"], 
+                                            //    System.Reflection.Assembly.GetEntryAssembly().Location, Arguments: "--game-startup=" + gameID, 
+                                            //    Description: (string)data["game"]["description"], IconPath: IconPath);
+
+                                            if (ShortcutPath != null) gameKey.SetValue("ShortcutPath", ShortcutPath); 
+                                            else Console.WriteLine("Could not create Desktop Shortcut, unknown error.");
+
+                                        } catch (Exception e)
+                                        {
+                                            Console.WriteLine("Could not create Desktop Shortcut with error: " + e.Message + " - " + e.Source + " - " + e.StackTrace);
+                                        }
+
                                     gameKey.SetValue("Installing", false);
                                     InstallationRunning = false;
                                 } else
@@ -560,10 +588,25 @@ namespace OS_Game_Launcher
                 var regGames = Registry.CurrentUser.OpenSubKey(Properties.Settings.Default.regestryPath + "\\Games", true);
                 Console.WriteLine("Uninstalling game " + gameID + " from " + installPath);
 
-                regGames.DeleteSubKeyTree(gameID.ToString());
+                if (regGames.OpenSubKey(gameID.ToString()).GetValueNames().Contains("ShortcutPath"))
+                    if (File.Exists((string)regGames.OpenSubKey(gameID.ToString()).GetValue("ShortcutPath"))) {
+                        try
+                        {
+                            File.Delete((string)regGames.OpenSubKey(gameID.ToString()).GetValue("ShortcutPath"));
+                        } catch (Exception e)
+                        {
+                            Console.WriteLine("Error deleting shortcut from Desktop: " + e.Message + " - " + e.StackTrace);
+                        }
+                    }
+
+                        regGames.DeleteSubKeyTree(gameID.ToString());
                 await Utils.PutTaskDelay(1000);
                 var instDir = new FileInfo((string)installPath);
                 await Utils.DeleteFolderAsync(instDir);
+
+                
+                
+
                 Console.WriteLine("Successfully uninstalled game " + gameID);
                 return true;
             } else
@@ -598,8 +641,18 @@ namespace OS_Game_Launcher
 
         }
 
+        public async static Task<JObject> GetNews()
+        {
+            var request = new RestRequest("/get_news");
+            var cTokeS = new CancellationTokenSource();
+            var response = await Utils.Client.ExecuteGetAsync(request, cTokeS.Token);
+            var data = JObject.Parse(response.Content);
+
+            return data;
+        }
+
         public static List<Pages.game_details> OpenGameDetails = new List<Pages.game_details>();
-        public static bool NavigateToGame(int gameID, NavigationService navService)
+        public static bool NavigateToGame(int gameID, NavigationService navService, bool Refresh=false, bool StartGame=false)
         {
             foreach (var gameDeatil in OpenGameDetails)
             {
@@ -607,10 +660,14 @@ namespace OS_Game_Launcher
                 {
                     navService.Navigate(gameDeatil);
                     Console.WriteLine("Game already has active session. Using it");
+                    if (StartGame) _ = gameDeatil.StartGame();
+                    else
+                        if (Refresh) gameDeatil.Refresh();
+
                     return true;
                 }
             }
-            Pages.game_details newPage = new Pages.game_details(gameID);
+            Pages.game_details newPage = new Pages.game_details(gameID, StartGame);
             navService.Navigate(newPage);
             OpenGameDetails.Add(newPage);
             Console.WriteLine("Created new session for game");
@@ -618,17 +675,83 @@ namespace OS_Game_Launcher
 
         }
 
+        public async static Task<bool> RefreshGamePage(int GameID)
+        {
+            foreach (var gameDetail in OpenGameDetails)
+            {
+                if (gameDetail.gameID == GameID)
+                {
+                    Utils.DisplayLoading(gameDetail._overlayFrame);
+                    gameDetail.Refresh();
+                    Utils.HideLoading(gameDetail._overlayFrame);
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static List<Pages.publisher> OpenPublisherDetails = new List<Pages.publisher>();
+        public static bool NavigateToPublisher(int publisherID, NavigationService navService)
+        {
+            foreach (var publisherDeatil in OpenPublisherDetails)
+            {
+                if (publisherDeatil.publisherID == publisherID)
+                {
+                    navService.Navigate(publisherDeatil);
+                    Console.WriteLine("Publisher already has active session. Using it");
+                    return true;
+                }
+            }
+            Pages.publisher newPage = new Pages.publisher(publisherID);
+            navService.Navigate(newPage);
+            OpenPublisherDetails.Add(newPage);
+            Console.WriteLine("Created new session for publisher");
+            return false;
+        }
+
         public async static Task HandleStartupArgs(List<string> args)
         {
+            Console.Write("Startup Args: ");
+            foreach (string arg in args)
+            {
+                Console.Write(arg + " -- ");
+            }
+            Console.WriteLine();
+
             var parsedArgs = Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed<CommandLineOptions>(o =>
             {
                 if (o.gameStartup > -1)
                 {
                     Console.WriteLine("Stated up with command to launch game " + o.gameStartup);
+                    mainWindow = (MainWindow)App.Current.MainWindow;
+                    NavigateToGame(o.gameStartup, mainWindow._mainFrame.NavigationService, StartGame: true);
                 }
                 else
                 {
-                    Console.WriteLine("No game to startup");
+                    string UrlS = args[0];
+                    if (args[0] == Assembly.GetEntryAssembly().Location && args.Count > 1)
+                    {
+                        UrlS = args[1];
+                    }
+
+                    Uri addr;
+                    if (Uri.TryCreate(UrlS, UriKind.Absolute, out addr))
+                    {
+                        if (addr.Host == "start-game")
+                        {
+                            int GameID = Convert.ToInt32(addr.Segments[1]);
+                            Console.WriteLine("Stated up with command to launch game " + GameID);
+                            mainWindow = (MainWindow)App.Current.MainWindow;
+                            NavigateToGame(GameID, mainWindow._mainFrame.NavigationService, StartGame: true);
+                        }
+                    } else
+                    {
+                        Console.WriteLine("No game to startup");
+                    }
+                    
+                    
                 }
             });
         }

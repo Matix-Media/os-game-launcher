@@ -80,3 +80,10 @@ C:\Users\user\source\repos\OS Game-Launcher\bin\Release\Microsoft.WindowsAPICode
 C:\Users\user\source\repos\OS Game-Launcher\bin\Release\Microsoft.WindowsAPICodePack.Shell.xml
 C:\Users\user\source\repos\OS Game-Launcher\obj\Release\Pages\settings.g.cs
 C:\Users\user\source\repos\OS Game-Launcher\obj\Release\Pages\settings.baml
+C:\Users\user\source\repos\OS Game-Launcher\bin\Release\Notifications.Wpf.dll
+C:\Users\user\source\repos\OS Game-Launcher\obj\Release\Interop.IWshRuntimeLibrary.dll
+C:\Users\user\source\repos\OS Game-Launcher\obj\Release\OS Game-Launcher.csproj.ResolveComReference.cache
+C:\Users\user\source\repos\OS Game-Launcher\obj\Release\Pages\aboutOSG.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Release\Pages\publisher.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Release\Pages\aboutOSG.baml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Release\Pages\publisher.baml

@@ -14,4 +14,7 @@
   <PropertyGroup>
     <EnableSecurityDebugging>false</EnableSecurityDebugging>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartArguments>osgamelauncher://start-game/7</StartArguments>
+  </PropertyGroup>
 </Project>

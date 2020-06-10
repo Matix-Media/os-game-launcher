@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
+using Notifications.Wpf;
 
 namespace OS_Game_Launcher.Pages
 {
@@ -34,12 +35,15 @@ namespace OS_Game_Launcher.Pages
         private bool FirstLoadDone;
         private MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
         private bool bannerLoaded = false;
+        private bool GameNeedsStart = false;
 
-        public game_details(int gameID)
+        public game_details(int gameID, bool StartGame=false)
         {
             InitializeComponent();
 
             this.gameID = gameID;
+
+            GameNeedsStart = StartGame;
         }
 
         private async Task UpdateGameInfo()
@@ -207,6 +211,11 @@ namespace OS_Game_Launcher.Pages
                 Utils.HideLoading(_overlayFrame);
                 FirstLoadDone = true;
                 GameRefreshLoop();
+
+                if (GameNeedsStart)
+                {
+                    _ = StartGame();
+                }
             }
             
         }
@@ -214,6 +223,7 @@ namespace OS_Game_Launcher.Pages
         private void publisherButton_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Navigating to publisher with ID " + publisherID);
+            Account.NavigateToPublisher(publisherID, this.NavigationService);
         }
 
         private void SourceCodeButton_Click(object sender, RoutedEventArgs e)
@@ -285,7 +295,18 @@ namespace OS_Game_Launcher.Pages
                         var installed = await Account.InstallGame(gameID, System.IO.Path.Combine(Utils.GetDefaultInstallationPath(), gameID.ToString()), (MainWindow)Application.Current.MainWindow);
                         if (installed)
                         {
-                            
+                            if (Settings.SendDesktopNotifications)
+                                Utils.notificationManager.Show(new NotificationContent
+                                {
+                                    Title = gameNameCode + " installed",
+                                    Message = gameNameCode + " is now ready to be played!",
+                                    Type = NotificationType.Success
+                                }, expirationTime: TimeSpan.FromSeconds(15), onClick: () => { 
+                                    MainWindow mainWindow = (MainWindow)App.Current.MainWindow;
+                                    mainWindow.SetFocus();
+                                    Account.NavigateToGame(gameID, mainWindow._mainFrame.NavigationService);
+                                }) ;
+
                             _ = mainWindow.discoverP.refresh();
                             _ = mainWindow.libraryP.refresh();
                             Utils.DisplayLoading(_overlayFrame);
@@ -301,6 +322,11 @@ namespace OS_Game_Launcher.Pages
                 }
             }
             
+        }
+
+        public void Refresh()
+        {
+            _ = UpdateGameInfo();
         }
 
         private void AdjustSize(object sender, SizeChangedEventArgs e)
@@ -323,7 +349,7 @@ namespace OS_Game_Launcher.Pages
             
         }
 
-        private async void GameProcessRefresh()
+        private async void GameProcessRefresh(bool UpdatePlayTime=true)
         {
             var started = DateTime.Now;
             while (Account.CheckGameRunning(runningGameProcess))
@@ -340,7 +366,7 @@ namespace OS_Game_Launcher.Pages
             {
                 IngameTime = 1;
             }
-            await Account.AddGameSession(gameID, Convert.ToInt32(IngameTime));
+            if (UpdatePlayTime) await Account.AddGameSession(gameID, Convert.ToInt32(IngameTime));
             btnPlay.Content = "Play";
             await UpdateGameInfo();
             Utils.HideLoading(_overlayFrame);
@@ -348,7 +374,7 @@ namespace OS_Game_Launcher.Pages
 
         private Process runningGameProcess;
 
-        private async void btnPlay_Click(object sender, RoutedEventArgs e)
+        public async Task StartGame()
         {
             if (Account.CheckGameRunning(runningGameProcess))
             {
@@ -360,13 +386,14 @@ namespace OS_Game_Launcher.Pages
                     await UpdateGameInfo();
                     Utils.HideLoading(_overlayFrame);
                 }
-            } else
+            }
+            else
             {
                 MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
                 mainWindow.gameStarting.Visibility = Visibility.Visible;
                 mainWindow.gameStartingName.Visibility = Visibility.Visible;
                 mainWindow.gameStartingName.Text = gameName.Text;
-            
+
                 var started = Account.StartGame(gameID);
                 btnPlay.Content = "Stop";
                 if (started is bool)
@@ -376,7 +403,8 @@ namespace OS_Game_Launcher.Pages
                     Utils.DisplayLoading(_overlayFrame);
                     await UpdateGameInfo();
                     Utils.HideLoading(_overlayFrame);
-                } else
+                }
+                else
                 {
                     runningGameProcess = (Process)started;
                     GameProcessRefresh();
@@ -387,7 +415,12 @@ namespace OS_Game_Launcher.Pages
                 mainWindow.gameStartingName.Visibility = Visibility.Hidden;
                 mainWindow.gameStartingName.Text = String.Empty;
             }
-            
+
+        }
+
+        private void btnPlay_Click(object sender, RoutedEventArgs e)
+        {
+            _ = StartGame();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

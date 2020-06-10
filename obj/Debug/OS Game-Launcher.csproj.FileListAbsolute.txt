@@ -80,3 +80,10 @@ C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\Microsoft.WindowsAPICodePa
 C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\Microsoft.WindowsAPICodePack.xml
 C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\Microsoft.WindowsAPICodePack.Shell.xml
 C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\ToggleSwitch.dll
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\publisher.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\publisher.baml
+C:\Users\user\source\repos\OS Game-Launcher\bin\Debug\Notifications.Wpf.dll
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\aboutOSG.g.cs
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Pages\aboutOSG.baml
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\Interop.IWshRuntimeLibrary.dll
+C:\Users\user\source\repos\OS Game-Launcher\obj\Debug\OS Game-Launcher.csproj.ResolveComReference.cache
